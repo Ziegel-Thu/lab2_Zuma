@@ -1,0 +1,15 @@
+lab2/
+├── src/
+│   ├── core/
+│   │   ├── Game.h
+│   │   ├── Game.cpp
+│   │
+│   │── ui/
+│   │   ├── MainWindow.h
+│   │   ├── MainWindow.cpp
+│   │
+│   └── main.cpp
+|
+├── lab2.pro
+├── lab2-test.pro
+└── README.md

@@ -1,0 +1,75 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            //在当前项目目录创建build文件夹
+            "label": "mkdir", //任务名称
+            "type": "shell", //任务类型，定义任务是被作为进程运行还是在 shell 中作为命令运行。
+            "options": {
+                "cwd": "${workspaceFolder}" //已执行程序或脚本的当前工作目录，设置当前项目文件夹
+            },
+            "command": "mkdir", //命令
+            "args": [ //命令后面跟的参数
+                "build"
+            ]
+        },
+        {
+            "label": "qmake-release",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build" //进入build目录
+            },
+            "command": "qmake", //把QT加到了环境变量PATH里，所以这里直接执行qmake
+            "args": [
+                "../${workspaceFolderBasename}.pro", //在build目录上一级
+                "\"CONFIG+=qtquickcompiler\"" //编译优化
+            ],
+            "dependsOn": [ //这是本条命令依赖的前置条件，就是上面创建build文件夹的task，直接执行本task会自动先调用依赖的task
+                // "mkdir" //手动执行一次 mkdir ，后面不用每次都执行创建目录的操作
+            ]
+        },
+        {
+            "label": "make-release",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "command": "make",
+            "args": [
+                "-f",
+                "Makefile", //-f 选择 Makefile，这是qmake编译出来的
+                "-j" //并行编译
+            ],
+            "dependsOn": [
+                "qmake-release"
+            ]
+        },
+        {
+            "label": "run-release",
+            "type": "process", //运行就不能选择shell执行了，要选择process
+            "options": {
+                "cwd": "${workspaceFolder}/build" //没在.pro配置DESTDIR,会生成到build目录下面对应目录
+            },
+            // 执行的app路径，app名称一般是当前项目文件夹的名称
+            // "command": "${workspaceFolderBasename}.app/Contents/MacOS/${workspaceFolderBasename}", // for macos
+            "command": "${workspaceFolder}/build/release/${workspaceFolderBasename}.exe", // for windows
+            // "command": "", // for linux // TODO 请参考上述两个平台的写法，自行查看可执行文件的路径，并进行修改
+            "dependsOn": [
+                "make-release"
+            ]
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "command": "make",
+            "args": [
+                "clean"
+            ]
+        }
+    ]
+}
