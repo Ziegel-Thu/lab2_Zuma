@@ -15,6 +15,9 @@ private:
 
 void GameTest::testBallCollisionAndMatch() {
     Game game;
+    // 设置游戏初始状态
+    game.initialize();
+    game.getBallList().clear();
     
     // 创建一个固定的初始球序列
     BallList ballList;
@@ -35,23 +38,11 @@ void GameTest::testBallCollisionAndMatch() {
         COLORS[1] 
     };
     float distance = 0;
-    BallList::BallNode* currentNode = nullptr;
     for (const QColor& color : colors) {
         Ball ball(QPointF(50 + distance, 50), color);
-        if (ballList.head == nullptr) {
-            ballList.head = new BallList::BallNode(ball, nullptr);
-            currentNode = ballList.head;
-        } else {
-            BallList::BallNode* newNode = new BallList::BallNode(ball, nullptr);
-            currentNode->next = newNode;
-            currentNode = newNode;
-        }
+        game.getBallList().append(ball);
         distance += BALL_RADIUS * 2;
     }
-    
-    // 设置游戏初始状态
-    game.initialize();
-    game.getBallList() = ballList;
     
     // 验证初始序列
     verifyBallSequence(game.getBallList(), colors);
