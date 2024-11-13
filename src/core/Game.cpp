@@ -1,8 +1,9 @@
 #include "Game.h"
-
+#include <thread>
 #include "Parameter.h"
 #include <QDebug>
-
+#include <QApplication>
+#include <QMessageBox>
 void BallList::append(const Ball& ball) {
     // TODO: implement
 }
@@ -131,6 +132,25 @@ void Game::updateShootingBalls(float deltaTime) {
 }
 
 void Game::checkMatches() {
+    for (int i = 0; i < balls.size()-2; ++i) {
+        if (balls[i].getColor() == balls[i+1].getColor()&&balls[i+1].getColor() == balls[i+2].getColor()) {
+            if(balls[i].distanceTo(balls[i+1]) < BALL_RADIUS * 2 + COLLISION_THRESHOLD && balls[i+1].distanceTo(balls[i+2]) < BALL_RADIUS * 2 + COLLISION_THRESHOLD) {
+            QColor color = balls[i].getColor();
+            balls.removeAt(i);
+            balls.removeAt(i);
+            balls.removeAt(i);
+            while(i < balls.size() && balls[i].getColor() == color&&balls[i].distanceTo(balls[i+1]) < BALL_RADIUS * 2 + COLLISION_THRESHOLD) {
+                balls.removeAt(i);
+            }
+            score += 100;
+            emit scoreChanged(score);
+            i--;
+            }
+            else {
+                QMessageBox::warning(nullptr,"","OK");
+            }
+        }
+    }
 }
 
 void Game::createInitialBalls() {

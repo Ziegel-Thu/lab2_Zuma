@@ -1,5 +1,5 @@
 #include "GameWidget.h"
-
+#include "Ball.h"
 #include "Parameter.h"
 #include <QPainter>
 #include <QDebug>
