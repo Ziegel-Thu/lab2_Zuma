@@ -3,6 +3,14 @@
 #include "Parameter.h"
 #include <QDebug>
 
+void BallList::append(const Ball& ball) {
+    // TODO: implement
+}
+
+void BallList::clear() {
+    // TODO: implement
+}
+
 Game::Game(QObject *parent)
     : QObject(parent)
     , shooter(QPointF(300, 300))  // 发射器位置调整到中间

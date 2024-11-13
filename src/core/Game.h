@@ -16,6 +16,8 @@ public:
     BallNode* head;
 
     BallList(): head(nullptr) {}
+    void append(const Ball& ball);
+    void clear();
 };
 
 class Game : public QObject {
