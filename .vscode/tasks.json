@@ -53,8 +53,8 @@
                 "cwd": "${workspaceFolder}/build" //没在.pro配置DESTDIR,会生成到build目录下面对应目录
             },
             // 执行的app路径，app名称一般是当前项目文件夹的名称
-            // "command": "${workspaceFolderBasename}.app/Contents/MacOS/${workspaceFolderBasename}", // for macos
-            "command": "${workspaceFolder}/build/release/${workspaceFolderBasename}.exe", // for windows
+             "command": "${workspaceFolderBasename}.app/Contents/MacOS/${workspaceFolderBasename}", // for macos
+            //"command": "${workspaceFolder}/build/release/${workspaceFolderBasename}.exe", // for windows
             // "command": "", // for linux // TODO 请参考上述两个平台的写法，自行查看可执行文件的路径，并进行修改
             "dependsOn": [
                 "make-release"

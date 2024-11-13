@@ -1,50 +1,43 @@
 {
-    "configurations": [
-        // for macos
-        {
-            "name": "Mac",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "/opt/homebrew/Cellar/qt/6.7.2/include/**" // TODO correct path
-            ],
-            "defines": [],
-            // "macFrameworkPath": [ // unnecessary
-            //     "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
-            // ],
-            "compilerPath": "/usr/bin/clang", // TODO correct path
-            "cStandard": "c11",
-            "cppStandard": "c++11",
-            "intelliSenseMode": "macos-clang-arm64", // TODO correct compiler and architecture
-            "configurationProvider": "ms-vscode.cmake-tools"
-        },
-        // for windows
-        {
-            "name": "Win32",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "C:/Qt/6.8.0/llvm-mingw_64/include/**" // TODO correct path
-            ],
-            "defines": [],
-            "compilerPath": "C:/Qt/Tools/llvm-mingw1706_64/bin/clang.exe", // TODO correct path
-            "cStandard": "c11",
-            "cppStandard": "c++11",
-            "intelliSenseMode": "windows-clang-x64", // TODO correct compiler and architecture
-            "configurationProvider": "ms-vscode.cmake-tools"
-        },
-        // for linux
-        {
-            "name": "Linux",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "/usr/include/**" // TODO correct path
-            ],
-            "defines": [],
-            "compilerPath": "/usr/bin/gcc", // TODO correct path
-            "cStandard": "c11",
-            "cppStandard": "c++11",
-            "intelliSenseMode": "linux-gcc-x64", // TODO correct compiler and architecture
-            "configurationProvider": "ms-vscode.cmake-tools"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "macos-clang-arm64",
+      "includePath": [
+        "${workspaceFolder}/**"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/clang",
+      "cStandard": "${default}",
+      "cppStandard": "${default}",
+      "intelliSenseMode": "macos-clang-arm64",
+      "configurationProvider": "ms-vscode.cmake-tools"
+    },
+    {
+      "name": "Win32",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "C:/Qt/6.8.0/llvm-mingw_64/include/**"
+      ],
+      "defines": [],
+      "compilerPath": "C:/Qt/Tools/llvm-mingw1706_64/bin/clang.exe",
+      "cStandard": "c11",
+      "cppStandard": "c++11",
+      "intelliSenseMode": "windows-clang-x64",
+      "configurationProvider": "ms-vscode.cmake-tools"
+    },
+    {
+      "name": "Linux",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "/usr/include/**"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "c11",
+      "cppStandard": "c++11",
+      "intelliSenseMode": "linux-gcc-x64",
+      "configurationProvider": "ms-vscode.cmake-tools"
+    }
+  ],
+  "version": 4
 }
