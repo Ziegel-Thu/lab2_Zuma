@@ -6,8 +6,8 @@
       "type": "lldb",
       "request": "launch",
       "args": [],
-      "cwd": "/Users/apple/Desktop/Study/CS/C++/qt-lab2-zhengsr23/src/test",
-      "program": "/Users/apple/Desktop/Study/CS/C++/qt-lab2-zhengsr23/src/test/build/Debug/outDebug"
+      "cwd": "/Users/apple/Desktop/Study/CS/C++/lab2/src",
+      "program": "/Users/apple/Desktop/Study/CS/C++/lab2/src/build/Debug/outDebug"
     }
   ]
 }
