@@ -188,7 +188,7 @@ QColor Game::generateRandomColor() const {
 void Game::checkGameOver() {
     // TODO:done modify BallList
     if (ballList.head->next != ballList.tail) {
-        QPointF ballPos = ballList.tail->ball.getPosition();
+        QPointF ballPos = ballList.tail->prev->ball.getPosition();
         QPointF endPoint = path.getPoints().last();
         
         // 计算两点之间的距离
