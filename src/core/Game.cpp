@@ -76,10 +76,11 @@ void Game::update(float deltaTime) {
         QPointF newPos = path.getPointAtDistance(newDistance); // 计算球的新位置
         current->ball.setPosition(newPos); // 设置球的新位置
         
-        if(current->next != ballList.tail && current->ball.distanceTo(current->next->ball) > BALL_RADIUS * 2 +COLLISION_THRESHOLD) {
+        if(current->next != ballList.tail && current->ball.distanceTo(current->next->ball) > BALL_RADIUS * 2 +EPS) {
             break;} // 如果这个球和下一个球之间有空隙，则后面的所有球都不移动
 
     }
+    checkMatches();
     // 检查游戏是否结束
     checkGameOver();
 }
@@ -132,8 +133,8 @@ void Game::updateShootingBalls(float deltaTime) {
 
 void Game::checkMatches() { 
     BallList::BallNode* current = ballList.head->next;
-    while(current->next->next != ballList.tail) {
-
+    while(current&&current->next&&current->next->next != ballList.tail) {
+        bool match = false;
         QColor color = current->ball.getColor();
         if(current->next->ball.getColor() == color && current->next->next->ball.getColor() == color) {
             if((current->ball.distanceTo(current->next->ball) < BALL_RADIUS * 2 + COLLISION_THRESHOLD)&&(current->next->ball.distanceTo(current->next->next->ball) < BALL_RADIUS * 2 + COLLISION_THRESHOLD)) {
@@ -144,9 +145,15 @@ void Game::checkMatches() {
                 current = current -> next;
                 score += 100;
                 emit scoreChanged(score);
+                match = true;
                 }
         }
-        current = current->next;
+        if(!current||current->next == ballList.tail) {
+            break;
+        }
+        else {
+            current = current->next;
+        }
     }
 }
 
