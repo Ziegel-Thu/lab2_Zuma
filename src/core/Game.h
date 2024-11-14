@@ -6,19 +6,7 @@
 #include "CollisionSystem.h"
 #include <QRandomGenerator>
 
-class BallList{
-public:
-    struct BallNode{
-        Ball ball;
-        BallNode* next;
-        BallNode(const Ball& ball, BallNode* next): ball(ball), next(next) {}
-    };
-    BallNode* head;
 
-    BallList(): head(nullptr) {}
-    void append(const Ball& ball);
-    void clear();
-};
 
 class Game : public QObject {
     Q_OBJECT

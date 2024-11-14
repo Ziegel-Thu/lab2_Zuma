@@ -3,6 +3,7 @@
 #include "Parameter.h"
 #include <QPainter>
 #include <QDebug>
+#include "Game.h"
 
 GameWidget::GameWidget(QWidget *parent)
     : QWidget(parent)
@@ -59,16 +60,22 @@ void GameWidget::drawPath(QPainter &painter) {
 }
 
 void GameWidget::drawBalls(QPainter &painter) {
-    // TODO: draw BallList
+    // TODO:done draw BallList
     // 绘制路径上的球
-    const QVector<Ball>& balls = game->getBalls();
-    for (const Ball& ball : balls) {
+    
+    const BallList& ballList = game->getBallList();
+
+    BallList::BallNode* current = ballList.head->next;
+
+    while(current != ballList.tail) {
+        Ball ball = current->ball;
         QPointF pos = ball.getPosition();
         float radius = ball.getRadius();
         
         painter.setBrush(ball.getColor());
         painter.setPen(Qt::NoPen);
         painter.drawEllipse(pos, radius, radius);
+        current = current->next;
     }
     
     // 绘制正在飞行的球

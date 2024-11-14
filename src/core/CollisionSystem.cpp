@@ -1,75 +1,122 @@
 #include "CollisionSystem.h"
-
+#include <iostream>
 #include "Parameter.h"
 #include "Game.h"
 #include <algorithm>
 
+
+void BallList::append(const Ball& ball) {
+
+
+        BallNode* newNode = new BallNode(ball, tail, tail->prev);
+        tail->prev->next = newNode;
+        tail->prev = newNode;
+    }
+
+
+
+void BallList::clear() {
+    BallList::BallNode* current = head;
+    while (current != tail)
+    {
+        BallNode* temp = current;
+        current = current->next;
+        delete temp;
+    }
+    delete tail;
+    current = nullptr;
+}
+void BallList::insert(BallNode* node, const Ball& ball) {
+    BallNode* newNode = new BallNode(ball, node, node->prev);
+    node->prev->next = newNode;
+    node->prev = newNode;
+}
+void BallList::remove(BallNode* node) {
+
+    if (node->prev) {
+        node->prev->next = node->next;
+    } else {
+        head = node->next;
+    }
+    if (node->next) {
+        node->next->prev = node->prev;
+    } else {
+        tail = node->prev;
+    }
+    delete node;
+}
 CollisionSystem::CollisionSystem() {
 }
 
-// TODO: modify BallList
-bool CollisionSystem::checkPathCollisions(const Ball& shootingBall, QVector<Ball>& pathBalls, const Path& path) {
-    CollisionResult result = findCollision(shootingBall, pathBalls);
-    
+// TODO:done modify BallList
+bool CollisionSystem::checkPathCollisions(const Ball& shootingBall, BallList& pathBallList, const Path& path) {
+    CollisionResult result = findCollision(shootingBall, pathBallList);
     if (result.hasCollision) {
-        handleCollision(shootingBall, pathBalls, path, result.collisionIndex);
+        handleCollision(shootingBall, pathBallList, path, result.collisionNode);
+
     }
 
     return result.hasCollision;
 }
 
-// TODO: modify BallList
+// TODO:done modify BallList
 CollisionSystem::CollisionResult CollisionSystem::findCollision(
-    const Ball& ball, const QVector<Ball>& balls) const {
-    CollisionResult result = {false, -1};
-    
-    for (int i = 0; i < balls.size(); ++i) {
-        float distance = ball.distanceTo(balls[i]);
-        if (distance < ball.getRadius() + balls[i].getRadius() + COLLISION_THRESHOLD) {
+    const Ball& ball, const BallList& pathBallList) const {
+    CollisionResult result = {false, nullptr};
+
+    BallList::BallNode* current = pathBallList.head;
+    while (current != pathBallList.tail) {
+        current=current->next;
+        float distance = ball.distanceTo(current->ball);
+        if (distance < ball.getRadius() + current->ball.getRadius() + COLLISION_THRESHOLD) {
             result.hasCollision = true;
-            result.collisionIndex = i;
+            result.collisionNode = current;
             break;
         }
     }
     
-    return result;
-}
+    
+    return result;}
 
-// TODO: modify BallList
-void CollisionSystem::handleCollision(Ball ball, QVector<Ball>& balls, const Path& path, const int& collisionIndex) {
+
+// TODO: done:modify BallList
+void CollisionSystem::handleCollision(Ball ball, BallList& ballList, const Path& path, BallList::BallNode* collisionNode) {
     // 获取碰撞点前后的球
-    int prevIndex = (collisionIndex - 1 >= 0) ? collisionIndex - 1 : collisionIndex;
-    int nextIndex = (collisionIndex + 1 < balls.size()) ? collisionIndex + 1 : collisionIndex;
+    BallList::BallNode* prevNode = collisionNode->prev;
+    BallList::BallNode* nextNode = collisionNode->next;
 
-    const Ball& prevBall = balls[prevIndex];
-    const Ball& nextBall = balls[nextIndex];
+
+    const Ball& prevBall = prevNode->ball;
+    const Ball& nextBall = nextNode->ball;
 
     float prevBallDistance = ball.distanceTo(prevBall);
     float nextBallDistance = ball.distanceTo(nextBall);
     
     // 计算插入位置
-    int insertIndex = (prevBallDistance < nextBallDistance) ? collisionIndex : collisionIndex + 1;
-    if (insertIndex < balls.size()) {
-        ball.setPosition(balls[insertIndex].getPosition());
+    BallList::BallNode* insertNode = (prevBallDistance < nextBallDistance) ? collisionNode : collisionNode->next;
+    if (insertNode != ballList.tail) {
+        ball.setPosition(insertNode->ball.getPosition());
     }
     else {
-        float currentDistance = path.getDistanceAtPoint(balls[collisionIndex].getPosition());
+        float currentDistance = path.getDistanceAtPoint(insertNode->ball.getPosition());
         float newDistance = currentDistance + BALL_RADIUS * 2;
         QPointF newPos = path.getPointAtDistance(newDistance);
         ball.setPosition(newPos);
+
     }
-    for (int i = insertIndex; i < balls.size(); ++i) {
-        float currentDistance = path.getDistanceAtPoint(balls[i].getPosition());
+    BallList::BallNode* current = insertNode;
+    while (current&& current != ballList.tail) {
+        float currentDistance = path.getDistanceAtPoint(current->ball.getPosition());
         float newDistance = currentDistance + BALL_RADIUS * 2;
         QPointF newPos = path.getPointAtDistance(newDistance);
-        balls[i].setPosition(newPos);
-        if(i < balls.size() - 1) {
-            float distance = balls[i].distanceTo(balls[i+1]);
-            if (distance > BALL_RADIUS * 2 + EPS) break;
+        current->ball.setPosition(newPos);  
+        if (current->prev != ballList.head) {
+            float distance = current->ball.distanceTo(current->next->ball);
+            if (distance > BALL_RADIUS * 2 + COLLISION_THRESHOLD) break;
         }
+        current = current->next;
     }
-
     // 插入球
     ball.setVelocity(QPointF(0, 0));
-    balls.insert(insertIndex, ball);
+    ballList.insert(insertNode, ball);
 }

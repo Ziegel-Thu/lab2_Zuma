@@ -2,19 +2,43 @@
 #include <QVector>
 #include "Ball.h"
 #include "Path.h"
+class BallList{
+public:
+    struct BallNode{
+        Ball ball;
+        BallNode* next;
+        BallNode* prev;
+        BallNode(const Ball& ball, BallNode* next, BallNode* prev): ball(ball), next(next), prev(prev) {}
+    };
+    BallNode* tail;
+    BallNode* head;
+
+    BallList()   {
+        head = new BallNode(Ball(), nullptr, nullptr);
+        tail = new BallNode(Ball(), nullptr, head);
+        head->next = tail;
+    }
+    ~BallList() {
+        clear();
+    }
+    void append(const Ball& ball);
+    void clear();
+    void insert(BallNode* node, const Ball& ball);
+    void remove(BallNode* node);
+};
 
 class CollisionSystem {
 public:
     CollisionSystem();
     
-    bool checkPathCollisions(const Ball& shootingBall, QVector<Ball>& pathBalls, const Path& path);// TODO: modify BallList
+    bool checkPathCollisions(const Ball& shootingBall, BallList& pathBallList, const Path& path);// TODOdone: modify BallList
     
     struct CollisionResult {
         bool hasCollision;
-        int collisionIndex;
+        BallList::BallNode* collisionNode;
     };
     
 private:
-    CollisionResult findCollision(const Ball& ball, const QVector<Ball>& balls) const;// TODO: modify BallList
-    void handleCollision(Ball ball, QVector<Ball>& balls, const Path& path, const int& collisionIndex);// TODO: modify BallList
+    CollisionResult findCollision(const Ball& ball,  const BallList& pathBallList) const;// TODOdone: modify BallList
+    void handleCollision(Ball ball,  BallList& pathBallList, const Path& path, BallList::BallNode* collisionNode);// TODOdone: modify BallList
 };

@@ -4,13 +4,8 @@
 #include <QDebug>
 #include <QApplication>
 #include <QMessageBox>
-void BallList::append(const Ball& ball) {
-    // TODO: implement
-}
-
-void BallList::clear() {
-    // TODO: implement
-}
+#include "CollisionSystem.h"
+#include <iostream>
 
 Game::Game(QObject *parent)
     : QObject(parent)
@@ -71,16 +66,20 @@ void Game::update(float deltaTime) {
     
     float pathLength = path.getTotalLength();
     
-    // TODO: modify BallList
+    // TODO: done: modify BallList
     // 更新路径上的球，从前向后更新
-    for (int i = 0; i < balls.size(); ++i) {
-        float currentDistance = path.getDistanceAtPoint(balls[i].getPosition()); // 计算球在路径上的当前位置
+    BallList::BallNode* current = ballList.head;
+    while(current->next != ballList.tail) {
+        current = current->next;
+        float currentDistance = path.getDistanceAtPoint(current->ball.getPosition()); // 计算球在路径上的当前位置
         float newDistance = currentDistance + BALL_SPEED * deltaTime; // 计算球在路径上的新位置
         QPointF newPos = path.getPointAtDistance(newDistance); // 计算球的新位置
-        balls[i].setPosition(newPos); // 设置球的新位置
-        if(i < balls.size() - 1 && balls[i].distanceTo(balls[i+1]) > BALL_RADIUS * 2 + EPS) break; // 如果这个球和下一个球之间有空隙，则后面的所有球都不移动
+        current->ball.setPosition(newPos); // 设置球的新位置
+        
+        if(current->next != ballList.tail && current->ball.distanceTo(current->next->ball) > BALL_RADIUS * 2 +COLLISION_THRESHOLD) {
+            break;} // 如果这个球和下一个球之间有空隙，则后面的所有球都不移动
+
     }
-    
     // 检查游戏是否结束
     checkGameOver();
 }
@@ -120,9 +119,9 @@ void Game::updateShootingBalls(float deltaTime) {
             continue;
         }
         
-        // TODO: modify BallList
+        // TODO:done modify BallList
         // 检查碰撞
-        bool hasCollision = collisionSystem.checkPathCollisions(ball, balls, path);
+        bool hasCollision = collisionSystem.checkPathCollisions(ball, ballList, path);
         if (hasCollision) {
             shootingBalls.removeAt(i);
             checkMatches();
@@ -131,25 +130,23 @@ void Game::updateShootingBalls(float deltaTime) {
     checkGameOver();
 }
 
-void Game::checkMatches() {
-    for (int i = 0; i < balls.size()-2; ++i) {
-        if (balls[i].getColor() == balls[i+1].getColor()&&balls[i+1].getColor() == balls[i+2].getColor()) {
-            if(balls[i].distanceTo(balls[i+1]) < BALL_RADIUS * 2 + COLLISION_THRESHOLD && balls[i+1].distanceTo(balls[i+2]) < BALL_RADIUS * 2 + COLLISION_THRESHOLD) {
-            QColor color = balls[i].getColor();
-            balls.removeAt(i);
-            balls.removeAt(i);
-            balls.removeAt(i);
-            while(i < balls.size() && balls[i].getColor() == color&&balls[i].distanceTo(balls[i+1]) < BALL_RADIUS * 2 + COLLISION_THRESHOLD) {
-                balls.removeAt(i);
-            }
-            score += 100;
-            emit scoreChanged(score);
-            i--;
-            }
-            else {
-                QMessageBox::warning(nullptr,"","OK");
-            }
+void Game::checkMatches() { 
+    BallList::BallNode* current = ballList.head->next;
+    while(current->next->next != ballList.tail) {
+
+        QColor color = current->ball.getColor();
+        if(current->next->ball.getColor() == color && current->next->next->ball.getColor() == color) {
+            if((current->ball.distanceTo(current->next->ball) < BALL_RADIUS * 2 + COLLISION_THRESHOLD)&&(current->next->ball.distanceTo(current->next->next->ball) < BALL_RADIUS * 2 + COLLISION_THRESHOLD)) {
+                current = current -> prev;
+                ballList.remove(current->next);
+                ballList.remove(current->next);
+                ballList.remove(current->next);
+                current = current -> next;
+                score += 100;
+                emit scoreChanged(score);
+                }
         }
+        current = current->next;
     }
 }
 
@@ -171,7 +168,7 @@ void Game::createInitialBalls() {
         // TODO: modify BallList
         // 创建球并设置飞行速度为0
         Ball ball(pos, generateRandomColor());
-        balls.append(ball);
+        ballList.append(ball);
         
         distance += ballSpacing;
     }
@@ -182,9 +179,9 @@ QColor Game::generateRandomColor() const {
 }
 
 void Game::checkGameOver() {
-    // TODO: modify BallList
-    if (!balls.isEmpty()) {
-        QPointF ballPos = balls.last().getPosition();
+    // TODO:done modify BallList
+    if (ballList.head->next != ballList.tail) {
+        QPointF ballPos = ballList.tail->ball.getPosition();
         QPointF endPoint = path.getPoints().last();
         
         // 计算两点之间的距离
