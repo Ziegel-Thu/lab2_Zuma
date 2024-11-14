@@ -134,18 +134,37 @@ void Game::updateShootingBalls(float deltaTime) {
 void Game::checkMatches() { 
     BallList::BallNode* current = ballList.head->next;
     while(current&&current->next&&current->next->next != ballList.tail) {
-        bool match = false;
         QColor color = current->ball.getColor();
         if(current->next->ball.getColor() == color && current->next->next->ball.getColor() == color) {
             if((current->ball.distanceTo(current->next->ball) < BALL_RADIUS * 2 + COLLISION_THRESHOLD)&&(current->next->ball.distanceTo(current->next->next->ball) < BALL_RADIUS * 2 + COLLISION_THRESHOLD)) {
-                current = current -> prev;
+                if (current != ballList.head->next) {
+                    current = current -> prev;
+                
                 ballList.remove(current->next);
                 ballList.remove(current->next);
-                ballList.remove(current->next);
-                current = current -> next;
-                score += 100;
+                int i=0;
+                while(current->next&&current->next->ball.getColor() == color&&current->ball.distanceTo(current->next->ball) < BALL_RADIUS * 2*(i+3) + COLLISION_THRESHOLD) {
+                    ballList.remove(current->next);
+                    i++;
+                }
+                score += 100*(i);
+
+                }
+                else{
+                    int i =1;
+                    while(current->next&&current->next->ball.getColor() == color&&ballList.head->next->ball.distanceTo(current->next->ball) < BALL_RADIUS * 2*i + COLLISION_THRESHOLD) {
+                        i++;
+                    }
+                    ballList.remove(ballList.head->next);
+                    score += 100*(i-2);
+                }
+                if(current->next) {
+                    current = current -> next;
+                }
+                else {
+                    break;
+                }
                 emit scoreChanged(score);
-                match = true;
                 }
         }
         if(!current||current->next == ballList.tail) {
@@ -188,7 +207,7 @@ QColor Game::generateRandomColor() const {
 void Game::checkGameOver() {
     // TODO:done modify BallList
     if (ballList.head->next != ballList.tail) {
-        QPointF ballPos = ballList.tail->ball.getPosition();
+        QPointF ballPos = ballList.tail->prev->ball.getPosition();
         QPointF endPoint = path.getPoints().last();
         
         // 计算两点之间的距离
