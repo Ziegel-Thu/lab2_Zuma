@@ -136,37 +136,14 @@ void Game::checkMatches() {
     while(current&&current->next&&current->next->next != ballList.tail) {
         QColor color = current->ball.getColor();
         if(current->next->ball.getColor() == color && current->next->next->ball.getColor() == color) {
-            if((current->ball.distanceTo(current->next->ball) < BALL_RADIUS * 2 + COLLISION_THRESHOLD)&&(current->next->ball.distanceTo(current->next->next->ball) < BALL_RADIUS * 2 + COLLISION_THRESHOLD)) {
-                if (current != ballList.head->next) {
-                    current = current -> prev;
+                current = current->prev;
+                ballList.remove(current->next);
+                ballList.remove(current->next);
+                ballList.remove(current->next);
                 
-                ballList.remove(current->next);
-                ballList.remove(current->next);
-                int i=0;
-                while(current->next&&current->next->ball.getColor() == color&&current->ball.distanceTo(current->next->ball) < BALL_RADIUS * 2*(i+3) + COLLISION_THRESHOLD) {
-                    ballList.remove(current->next);
-                    i++;
-                }
-                score += 100*(i);
-
-                }
-                else{
-                    int i =1;
-                    while(current->next&&current->next->ball.getColor() == color&&ballList.head->next->ball.distanceTo(current->next->ball) < BALL_RADIUS * 2*i + COLLISION_THRESHOLD) {
-                        i++;
-                    }
-                    ballList.remove(ballList.head->next);
-                    score += 100*(i-2);
-                }
-                if(current->next) {
-                    current = current -> next;
-                }
-                else {
-                    break;
-                }
-                emit scoreChanged(score);
-                }
         }
+        score += 100;
+        emit scoreChanged(score);
         if(!current||current->next == ballList.tail) {
             break;
         }
