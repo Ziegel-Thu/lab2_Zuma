@@ -25,6 +25,10 @@ void GameTest::testBallCollisionAndMatch() {
     
     printf("Creating initial ball sequence...\n");
     BallList ballList;
+    printf("ballList.head: %p\n", ballList.head);
+    printf("ballList.head->next: %p\n", ballList.head->next);
+    printf("ballList.tail: %p\n", ballList.tail);
+    printf("ballList.tail->prev: %p\n", ballList.tail->prev);
     QVector<QColor> colors = {
         COLORS[1],
         COLORS[0], 
@@ -49,7 +53,7 @@ void GameTest::testBallCollisionAndMatch() {
         distance += BALL_RADIUS * 2;
     }
     BallList::BallNode* currentNode = ballList.head->next;
-    if(currentNode==ballList.tail) {
+    if(currentNode=src/test/GameTest.cpp=ballList.tail) { 
         QFAIL("Ball sequence is empty");
     }
     while(currentNode!=ballList.tail) {
