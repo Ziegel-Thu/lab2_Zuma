@@ -45,6 +45,11 @@ void GameTest::testBallCollisionAndMatch() {
         game.getBallList().append(ball);
         distance += BALL_RADIUS * 2;
     }
+    BallList::BallNode* currentNode = ballList.head->next;
+    while(currentNode!=ballList.tail) {
+        printf("Ball color: %s\n", currentNode->ball.getColor().name().toStdString().c_str());
+        currentNode = currentNode->next;
+    }
     
     printf("Verifying initial sequence...\n");
     verifyBallSequence(game.getBallList(), colors);
@@ -54,12 +59,9 @@ void GameTest::testBallCollisionAndMatch() {
     shooter.setNextBall(Ball(shooter.getPosition(), COLORS[3]));
     simulateShot(game, QPointF(50 + BALL_RADIUS * 11, 50));
     
-    printf("Updating game state...\n");
     for (int i = 0; i < 180; ++i) {
         game.update(0.016f); // 60fps
-        if (i % 30 == 0) {
-            printf("Game state updated: %d frames\n", i);
-        }
+
     }
     
     printf("Verifying sequence after first shot...\n");
@@ -70,12 +72,9 @@ void GameTest::testBallCollisionAndMatch() {
     shooter.setNextBall(Ball(shooter.getPosition(), COLORS[1]));
     simulateShot(game, QPointF(50 + BALL_RADIUS * 6, 50));
     
-    printf("Updating game state...\n");
     for (int i = 0; i < 180; ++i) {
         game.update(0.016f); // 60fps
-        if (i % 30 == 0) {
-            printf("Game state updated: %d frames\n", i);
-        }
+ 
     }
 
 
@@ -85,7 +84,7 @@ void GameTest::testBallCollisionAndMatch() {
 }
 
 void GameTest::verifyBallSequence(const BallList& ballList, const QVector<QColor>& expectedColors) {
-    BallList::BallNode* currentNode = ballList.head->next;
+    BallList::BallNode* currentNode = ballList.head;
     int index = 0;
     while (currentNode != nullptr) {
         if (index >= expectedColors.size()) {
