@@ -20,6 +20,8 @@ public:
     }
     ~BallList() {
         clear();
+        delete head;
+        delete tail;
     }
     void append(const Ball& ball);
     void clear();

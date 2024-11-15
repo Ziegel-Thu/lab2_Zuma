@@ -11,6 +11,8 @@ void BallList::append(const Ball& ball) {
         BallNode* newNode = new BallNode(ball, tail, tail->prev);
         tail->prev->next = newNode;
         tail->prev = newNode;
+        std::cout << "Ball appended: " << ball.getColor().name().toStdString() << std::endl;
+        
     }
 
 
@@ -20,6 +22,7 @@ void BallList::clear() {
     while (current != tail)
     {
         BallNode* temp = current;
+        head->next = current->next;
         current = current->next;
         delete temp;
     }

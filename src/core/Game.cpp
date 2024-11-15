@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include "CollisionSystem.h"
 #include <iostream>
+#include <cstdio>
 
 Game::Game(QObject *parent)
     : QObject(parent)
@@ -139,11 +140,14 @@ bool Game::checkMatches() {
         return match;
     }
     BallList::BallNode* current = ballList.head->next;
-    while(current&&current->next&&current->next->next != ballList.tail) {
+    while(current&&current->next&&current->next->next&&current->next->next != ballList.tail) {
         QColor color = current->ball.getColor();
         if(current->next->ball.getColor() == color && current->next->next->ball.getColor() == color) {
-                if(current->next->next->next!=ballList.tail&&current->next->next->next->ball.getColor()!=color) {
-                    current = current->prev;
+            printf("Match found with color: %s\n", color.name().toStdString().c_str());
+
+
+            if(current->next->next->next&&current->next->next->next!=ballList.tail&&current->next->next->next->ball.getColor()!=color) {
+                current = current->prev;
                     ballList.remove(current->next);
                     current = current->next;
                 }
@@ -190,6 +194,9 @@ void Game::createInitialBalls() {
         
         distance += ballSpacing;
     }
+    
+
+
 
 }
 
@@ -215,7 +222,6 @@ void Game::checkGameOver() {
     else {
         score += 200;
         emit scoreChanged(score);
-        gameRunning = false;
-        emit gameOver();
+        
     }
 }
