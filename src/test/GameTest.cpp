@@ -1,7 +1,7 @@
 #include <QtTest>
 #include "../src/core/Game.h"
 #include "../src/core/Parameter.h"
-
+#include <iostream>
 class GameTest : public QObject {
     Q_OBJECT
     
@@ -15,11 +15,11 @@ private:
 
 void GameTest::testBallCollisionAndMatch() {
     Game game;
-    // 设置游戏初始状态
+    std::cout << "Initializing game..." << std::endl;
     game.initialize();
     game.getBallList().clear();
     
-    // 创建一个固定的初始球序列
+    std::cout << "Creating initial ball sequence..." << std::endl;
     BallList ballList;
     QVector<QColor> colors = {
         COLORS[1],
@@ -44,39 +44,39 @@ void GameTest::testBallCollisionAndMatch() {
         distance += BALL_RADIUS * 2;
     }
     
-    // 验证初始序列
+    std::cout << "Verifying initial sequence..." << std::endl;
     verifyBallSequence(game.getBallList(), colors);
     
-    // 发射一个球，瞄准第7个球和第8个球之间
+    std::cout << "Simulating first shot..." << std::endl;
     Shooter& shooter = const_cast<Shooter&>(game.getShooter());
     shooter.setNextBall(Ball(shooter.getPosition(), COLORS[3]));
     simulateShot(game, QPointF(50 + BALL_RADIUS * 11, 50));
     
-    // 等待球碰撞和消除
+    std::cout << "Updating game state..." << std::endl;
     for (int i = 0; i < 180; ++i) {
         game.update(0.016f); // 60fps
     }
     
-    // 验证消除后的序列
+    std::cout << "Verifying sequence after first shot..." << std::endl;
     QVector<QColor> expectedColors = {COLORS[1], COLORS[1]};
     verifyBallSequence(game.getBallList(), expectedColors);
 
-    // 第二次发射一个球
+    std::cout << "Simulating second shot..." << std::endl;
     shooter.setNextBall(Ball(shooter.getPosition(), COLORS[1]));
     simulateShot(game, QPointF(50 + BALL_RADIUS * 6, 50));
     
-    // 等待球碰撞和消除
+    std::cout << "Updating game state..." << std::endl;
     for (int i = 0; i < 180; ++i) {
         game.update(0.016f); // 60fps
     }
 
-    // 验证消除后的序列
+    std::cout << "Verifying sequence after second shot..." << std::endl;
     expectedColors.clear();
     verifyBallSequence(game.getBallList(), expectedColors);
 }
 
 void GameTest::verifyBallSequence(const BallList& ballList, const QVector<QColor>& expectedColors) {
-    BallList::BallNode* currentNode = ballList.head;
+    BallList::BallNode* currentNode = ballList.head->next;
     for (int i = 0; i < expectedColors.size(); ++i) {
         if (currentNode == nullptr) {
             QFAIL("Ball sequence is shorter than expected");

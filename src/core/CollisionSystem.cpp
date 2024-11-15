@@ -27,6 +27,7 @@ void BallList::clear() {
     current = nullptr;
 }
 void BallList::insert(BallNode* node, const Ball& ball) {
+    
     BallNode* newNode = new BallNode(ball, node, node->prev);
     node->prev->next = newNode;
     node->prev = newNode;
@@ -82,8 +83,8 @@ CollisionSystem::CollisionResult CollisionSystem::findCollision(
 // TODO: done:modify BallList
 void CollisionSystem::handleCollision(Ball ball, BallList& ballList, const Path& path, BallList::BallNode* collisionNode) {
     // 获取碰撞点前后的球
-    BallList::BallNode* prevNode = collisionNode->prev;
-    BallList::BallNode* nextNode = collisionNode->next;
+    BallList::BallNode* prevNode = collisionNode->prev==ballList.head?collisionNode:collisionNode->prev;
+    BallList::BallNode* nextNode = collisionNode->next==ballList.tail?collisionNode:collisionNode->next;
 
 
     const Ball& prevBall = prevNode->ball;
@@ -91,10 +92,11 @@ void CollisionSystem::handleCollision(Ball ball, BallList& ballList, const Path&
 
     float prevBallDistance = ball.distanceTo(prevBall);
     float nextBallDistance = ball.distanceTo(nextBall);
+
     
     // 计算插入位置
     BallList::BallNode* insertNode = (prevBallDistance < nextBallDistance) ? collisionNode : collisionNode->next;
-    if (insertNode != ballList.tail) {
+    if (insertNode != ballList.tail->prev) {
         ball.setPosition(insertNode->ball.getPosition());
     }
     else {
@@ -104,8 +106,10 @@ void CollisionSystem::handleCollision(Ball ball, BallList& ballList, const Path&
         ball.setPosition(newPos);
 
     }
+    std::cout<<(insertNode==ballList.tail)<<std::endl;
+
     BallList::BallNode* current = insertNode;
-    while (current&& current != ballList.tail) {
+    while (current&& current != ballList.tail->prev) {
         float currentDistance = path.getDistanceAtPoint(current->ball.getPosition());
         float newDistance = currentDistance + BALL_RADIUS * 2;
         QPointF newPos = path.getPointAtDistance(newDistance);
@@ -115,7 +119,9 @@ void CollisionSystem::handleCollision(Ball ball, BallList& ballList, const Path&
             if (distance > BALL_RADIUS * 2 + COLLISION_THRESHOLD) break;
         }
         current = current->next;
+
     }
+
     // 插入球
     ball.setVelocity(QPointF(0, 0));
     ballList.insert(insertNode, ball);
