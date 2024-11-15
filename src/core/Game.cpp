@@ -125,13 +125,19 @@ void Game::updateShootingBalls(float deltaTime) {
         bool hasCollision = collisionSystem.checkPathCollisions(ball, ballList, path);
         if (hasCollision) {
             shootingBalls.removeAt(i);
-            checkMatches();
+            while(checkMatches())
+            {
+            };
         }
     }
     checkGameOver();
 }
 
-void Game::checkMatches() { 
+bool Game::checkMatches() { 
+    bool match = false;
+    if(ballList.head->next == ballList.tail) {
+        return match;
+    }
     BallList::BallNode* current = ballList.head->next;
     while(current&&current->next&&current->next->next != ballList.tail) {
         QColor color = current->ball.getColor();
@@ -140,17 +146,20 @@ void Game::checkMatches() {
                 ballList.remove(current->next);
                 ballList.remove(current->next);
                 ballList.remove(current->next);
-                
+                match = true;
+                score+=100;
+                emit scoreChanged(score);
         }
-        score += 100;
-        emit scoreChanged(score);
         if(!current||current->next == ballList.tail) {
+            return match;
             break;
         }
         else {
             current = current->next;
         }
+        
     }
+    return match;
 }
 
 void Game::createInitialBalls() {

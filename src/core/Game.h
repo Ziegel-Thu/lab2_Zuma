@@ -39,7 +39,7 @@ private:
     int score;
     bool gameRunning;
     
-    void checkMatches();
+    bool checkMatches();
     void removeMatchedBalls();
     void createInitialBalls();
     QColor generateRandomColor() const;
