@@ -142,6 +142,11 @@ bool Game::checkMatches() {
     while(current&&current->next&&current->next->next != ballList.tail) {
         QColor color = current->ball.getColor();
         if(current->next->ball.getColor() == color && current->next->next->ball.getColor() == color) {
+                if(current->next->next->next!=ballList.tail&&current->next->next->next->ball.getColor()!=color) {
+                    current = current->prev;
+                    ballList.remove(current->next);
+                    current = current->next;
+                }
                 current = current->prev;
                 ballList.remove(current->next);
                 ballList.remove(current->next);
@@ -166,6 +171,7 @@ void Game::createInitialBalls() {
     const float ballSpacing = BALL_RADIUS * 2;
     float distance = 0;
     
+    /*
     while (distance < path.getTotalLength() / 2) { // 只创建一半的路径长度
         QPointF pos = path.getPointAtDistance(distance);
         QPointF nextPos = path.getPointAtDistance(distance + 0.1f); // 获取稍远一点的位置来计算方向
@@ -184,6 +190,7 @@ void Game::createInitialBalls() {
         
         distance += ballSpacing;
     }
+
 }
 
 QColor Game::generateRandomColor() const {
