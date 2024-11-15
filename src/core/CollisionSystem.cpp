@@ -96,20 +96,19 @@ void CollisionSystem::handleCollision(Ball ball, BallList& ballList, const Path&
     
     // 计算插入位置
     BallList::BallNode* insertNode = (prevBallDistance < nextBallDistance) ? collisionNode : collisionNode->next;
-    if (insertNode != ballList.tail->prev) {
+    if (insertNode != ballList.tail) {
         ball.setPosition(insertNode->ball.getPosition());
     }
     else {
-        float currentDistance = path.getDistanceAtPoint(insertNode->ball.getPosition());
+        float currentDistance = path.getDistanceAtPoint(collisionNode->ball.getPosition());
         float newDistance = currentDistance + BALL_RADIUS * 2;
         QPointF newPos = path.getPointAtDistance(newDistance);
         ball.setPosition(newPos);
 
     }
-    std::cout<<(insertNode==ballList.tail)<<std::endl;
 
     BallList::BallNode* current = insertNode;
-    while (current&& current != ballList.tail->prev) {
+    while (current&& current!=ballList.tail) {
         float currentDistance = path.getDistanceAtPoint(current->ball.getPosition());
         float newDistance = currentDistance + BALL_RADIUS * 2;
         QPointF newPos = path.getPointAtDistance(newDistance);
@@ -121,6 +120,8 @@ void CollisionSystem::handleCollision(Ball ball, BallList& ballList, const Path&
         current = current->next;
 
     }
+
+
 
     // 插入球
     ball.setVelocity(QPointF(0, 0));

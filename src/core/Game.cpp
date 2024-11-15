@@ -166,7 +166,7 @@ void Game::createInitialBalls() {
     const float ballSpacing = BALL_RADIUS * 2;
     float distance = 0;
     
-    while (distance < BALL_RADIUS * 2) { // 只创建一半的路径长度
+    while (distance < path.getTotalLength() / 2) { // 只创建一半的路径长度
         QPointF pos = path.getPointAtDistance(distance);
         QPointF nextPos = path.getPointAtDistance(distance + 0.1f); // 获取稍远一点的位置来计算方向
         
