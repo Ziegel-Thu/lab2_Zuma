@@ -53,7 +53,7 @@ void GameTest::testBallCollisionAndMatch() {
         distance += BALL_RADIUS * 2;
     }
     BallList::BallNode* currentNode = ballList.head->next;
-    if(currentNode=src/test/GameTest.cpp=ballList.tail) { 
+    if(currentNode==ballList.tail) { 
         QFAIL("Ball sequence is empty");
     }
     while(currentNode!=ballList.tail) {
