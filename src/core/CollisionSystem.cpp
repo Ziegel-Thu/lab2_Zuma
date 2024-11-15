@@ -16,7 +16,7 @@ void BallList::append(const Ball& ball) {
 
 
 void BallList::clear() {
-    BallList::BallNode* current = head;
+    BallList::BallNode* current = head->next;
     while (current != tail)
     {
         BallNode* temp = current;
