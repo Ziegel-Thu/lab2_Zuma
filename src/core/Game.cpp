@@ -146,10 +146,18 @@ bool Game::checkMatches() {
             printf("Match found with color: %s\n", color.name().toStdString().c_str());
 
 
-            if(current->next->next->next&&current->next->next->next!=ballList.tail&&current->next->next->next->ball.getColor()!=color) {
+            if(current->next->next->next&&current->next->next->next!=ballList.tail&&current->next->next->next->ball.getColor()==color) {
                 current = current->prev;
-                    ballList.remove(current->next);
                     current = current->next;
+                    std::cout<<"current: "<<current->ball.getColor().name().toStdString().c_str()<<std::endl;
+                    std::cout<<"current->next: "<<current->next->ball.getColor().name().toStdString().c_str()<<std::endl;
+                    std::cout<<"current->next->next: "<<current->next->next->ball.getColor().name().toStdString().c_str()<<std::endl;
+                    std::cout<<"current->next->next->next: "<<current->next->next->next->ball.getColor().name().toStdString().c_str()<<std::endl;
+
+                    ballList.remove(current->next);
+
+                    std::cout<<"remove ball"<<std::endl;
+
                 }
                 current = current->prev;
                 ballList.remove(current->next);
