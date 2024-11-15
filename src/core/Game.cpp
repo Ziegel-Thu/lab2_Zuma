@@ -1,12 +1,9 @@
 #include "Game.h"
-#include <thread>
 #include "Parameter.h"
 #include <QDebug>
-#include <QApplication>
 #include <QMessageBox>
 #include "CollisionSystem.h"
-#include <iostream>
-#include <cstdio>
+
 
 Game::Game(QObject *parent)
     : QObject(parent)
@@ -143,20 +140,14 @@ bool Game::checkMatches() {
     while(current&&current->next&&current->next->next&&current->next->next != ballList.tail) {
         QColor color = current->ball.getColor();
         if(current->next->ball.getColor() == color && current->next->next->ball.getColor() == color) {
-            printf("Match found with color: %s\n", color.name().toStdString().c_str());
 
 
             if(current->next->next->next&&current->next->next->next!=ballList.tail&&current->next->next->next->ball.getColor()==color) {
                 current = current->prev;
                     current = current->next;
-                    std::cout<<"current: "<<current->ball.getColor().name().toStdString().c_str()<<std::endl;
-                    std::cout<<"current->next: "<<current->next->ball.getColor().name().toStdString().c_str()<<std::endl;
-                    std::cout<<"current->next->next: "<<current->next->next->ball.getColor().name().toStdString().c_str()<<std::endl;
-                    std::cout<<"current->next->next->next: "<<current->next->next->next->ball.getColor().name().toStdString().c_str()<<std::endl;
 
                     ballList.remove(current->next);
 
-                    std::cout<<"remove ball"<<std::endl;
 
                 }
                 current = current->prev;
@@ -202,48 +193,6 @@ void Game::createInitialBalls() {
         
         distance += ballSpacing;
     }
-    ballList.clear();
-    printf("ballList.head: %p\n", ballList.head);
-    printf("ballList.head->next: %p\n", ballList.head->next);
-    printf("ballList.tail: %p\n", ballList.tail);
-    printf("ballList.tail->prev: %p\n", ballList.tail->prev);
-    QVector<QColor> colors = {
-        COLORS[1],
-        COLORS[0], 
-        COLORS[0], 
-        COLORS[1], 
-        COLORS[1], 
-        COLORS[2], 
-        COLORS[3], 
-        COLORS[3],
-        COLORS[2], 
-        COLORS[2], 
-        COLORS[1], 
-        COLORS[1], 
-        COLORS[0],
-        COLORS[1] 
-    };
-    distance = 0;
-    for (const QColor& color : colors) {
-        Ball ball(QPointF(50 + distance, 50), color);
-        printf("Appending ball with color: %s at distance: %.2f\n", color.name().toStdString().c_str(), distance);
-        ballList.append(ball);
-        distance += BALL_RADIUS * 2;
-    }
-    BallList::BallNode* currentNode = ballList.head->next;
-    if(currentNode==ballList.tail) {
-        printf("Ball sequence is empty");
-    }
-    while(currentNode!=ballList.tail) {
-        printf("Ball color: %s\n", currentNode->ball.getColor().name().toStdString().c_str());
-        currentNode = currentNode->next;}
-
-    
-
-    
-
-
-
 }
 
 QColor Game::generateRandomColor() const {

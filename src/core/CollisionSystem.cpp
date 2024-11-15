@@ -1,22 +1,14 @@
 #include "CollisionSystem.h"
-#include <iostream>
 #include "Parameter.h"
 #include "Game.h"
 #include <algorithm>
 
 
 void BallList::append(const Ball& ball) {
-
-
         BallNode* newNode = new BallNode(ball, tail, tail->prev);
-        std::cout <<tail<<" "<<tail->prev<<std::endl;
         tail->prev->next = newNode;
         tail->prev = newNode;
-        std::cout <<newNode<<" "<<newNode->next<<" "<<newNode->prev<<std::endl;
-
     }
-
-
 
 void BallList::clear() {
     BallList::BallNode* current = head->next;

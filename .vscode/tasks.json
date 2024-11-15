@@ -66,10 +66,30 @@
             "options": {
                 "cwd": "${workspaceFolder}/build"
             },
-            "command": "make",
+            "command": "make", 
             "args": [
                 "clean"
             ]
+        },
+        {
+            "label": "make",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build-test"
+            },
+            "command": "make",
+            "args": ["-f", "Makefile", "-j"]
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build-test"
+            },
+            "dependsOn": [
+                "make"
+            ],
+            "command": "lab2-test.app/Contents/MacOS/lab2-test"
         }
     ]
 }
