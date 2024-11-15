@@ -15,10 +15,13 @@ private:
 };
 
 void GameTest::testBallCollisionAndMatch() {
+    printf("Starting testBallCollisionAndMatch...\n");
     Game game;
-    printf("Initializing game...\n");
+    printf("Game object created.\n");
     game.initialize();
+    printf("Game initialized.\n");
     game.getBallList().clear();
+    printf("Ball list cleared.\n");
     
     printf("Creating initial ball sequence...\n");
     BallList ballList;
@@ -46,6 +49,9 @@ void GameTest::testBallCollisionAndMatch() {
         distance += BALL_RADIUS * 2;
     }
     BallList::BallNode* currentNode = ballList.head->next;
+    if(currentNode==ballList.tail) {
+        QFAIL("Ball sequence is empty");
+    }
     while(currentNode!=ballList.tail) {
         printf("Ball color: %s\n", currentNode->ball.getColor().name().toStdString().c_str());
         currentNode = currentNode->next;
@@ -84,9 +90,9 @@ void GameTest::testBallCollisionAndMatch() {
 }
 
 void GameTest::verifyBallSequence(const BallList& ballList, const QVector<QColor>& expectedColors) {
-    BallList::BallNode* currentNode = ballList.head;
+    BallList::BallNode* currentNode = ballList.head->next;
     int index = 0;
-    while (currentNode != nullptr) {
+    while (currentNode != ballList.tail) {
         if (index >= expectedColors.size()) {
             QFAIL("Ball sequence is longer than expected");
         }
