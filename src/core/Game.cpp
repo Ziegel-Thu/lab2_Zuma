@@ -194,9 +194,6 @@ void Game::createInitialBalls() {
         
         distance += ballSpacing;
     }
-    
-
-
 
 }
 
@@ -222,6 +219,6 @@ void Game::checkGameOver() {
     else {
         score += 200;
         emit scoreChanged(score);
-        
+
     }
 }
