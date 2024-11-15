@@ -194,6 +194,47 @@ void Game::createInitialBalls() {
         
         distance += ballSpacing;
     }
+    ballList.clear();
+    printf("ballList.head: %p\n", ballList.head);
+    printf("ballList.head->next: %p\n", ballList.head->next);
+    printf("ballList.tail: %p\n", ballList.tail);
+    printf("ballList.tail->prev: %p\n", ballList.tail->prev);
+    QVector<QColor> colors = {
+        COLORS[1],
+        COLORS[0], 
+        COLORS[0], 
+        COLORS[1], 
+        COLORS[1], 
+        COLORS[2], 
+        COLORS[3], 
+        COLORS[3],
+        COLORS[2], 
+        COLORS[2], 
+        COLORS[1], 
+        COLORS[1], 
+        COLORS[0],
+        COLORS[1] 
+    };
+    distance = 0;
+    for (const QColor& color : colors) {
+        Ball ball(QPointF(50 + distance, 50), color);
+        printf("Appending ball with color: %s at distance: %.2f\n", color.name().toStdString().c_str(), distance);
+        ballList.append(ball);
+        distance += BALL_RADIUS * 2;
+    }
+    BallList::BallNode* currentNode = ballList.head->next;
+    if(currentNode==ballList.tail) {
+        printf("Ball sequence is empty");
+    }
+    while(currentNode!=ballList.tail) {
+        printf("Ball color: %s\n", currentNode->ball.getColor().name().toStdString().c_str());
+        currentNode = currentNode->next;}
+
+    
+
+    
+
+
 
 }
 
