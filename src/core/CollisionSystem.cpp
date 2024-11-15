@@ -23,7 +23,6 @@ void BallList::clear() {
         current = current->next;
         delete temp;
     }
-    delete tail;
     current = nullptr;
 }
 void BallList::insert(BallNode* node, const Ball& ball) {
